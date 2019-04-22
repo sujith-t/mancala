@@ -16,14 +16,27 @@ public final class SquareModel extends Model {
     
     private Element element;
 
+    /**
+     * Constructor
+     */    
     public SquareModel() {
         
     }
-    
+
+    /**
+     * Constructor
+     * 
+     * @param element
+     */    
     public SquareModel(Element element) {
         this.toModel(element);
     }
-    
+
+    /**
+     * Convert an element to a Model object
+     * 
+     * @param element
+     */    
     @Override
     public void toModel(Element element) {
         this.id = (element.hasAttribute("id")) ? element.getAttribute("id") : this.id;
@@ -33,6 +46,11 @@ public final class SquareModel extends Model {
         this.element = element;
     }
 
+    /**
+     * Returns XMLNode representation of Model
+     * 
+     * @return Element
+     */    
     @Override
     public Element toXmlNode() {
         if(this.element == null) {
@@ -51,10 +69,20 @@ public final class SquareModel extends Model {
         return this.element;
     }
 
+    /**
+     * Returns Id
+     * 
+     * @return String
+     */     
     public String getId() {
         return id;
     }
 
+    /**
+     * Set Id
+     * 
+     * @param id
+     */    
     public void setId(String id) {
         this.id = id;
     }
@@ -63,18 +91,34 @@ public final class SquareModel extends Model {
         return points;
     }
 
+    /**
+     * Set points
+     * 
+     * @param points
+     */    
     public void setPoints(int points) {
         this.points = points;
     }
-    
+
+    /**
+     * Returns Whether Square on Next Start
+     * 
+     * @return Boolean
+     */    
     public boolean isNextStart() {
         return this.nextStart;
     }   
-    
+
+    /**
+     * Marks the Square as Next Start
+     */    
     public void markAsNextStart() {
         this.nextStart = true;
     }    
-    
+
+    /**
+     * Removing the Square as Next Start
+     */    
     public void removeNextStart() {
         this.nextStart = false;
     }

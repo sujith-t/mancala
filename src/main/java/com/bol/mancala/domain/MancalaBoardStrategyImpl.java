@@ -71,13 +71,14 @@ public class MancalaBoardStrategyImpl implements GameBoard {
     
     @Override
     public void move() {
-        if(!currentPlayerTurn || this.startPosition == null) {
-            return;
-        }
-
         String opponentPlayerNickname = (String)this.gameResults.get(GameConstant.OPPONENT_NICKNAME);
         MoverModel currentMover = this.gameSession.getMover(this.currentPlayer.getUsername());
         MoverModel opponentMover = this.gameSession.getMover(opponentPlayerNickname);
+        
+        if(!currentPlayerTurn || this.startPosition == null || currentMover.getEngaged().equals("pending") || opponentMover.getEngaged().equals("pending")) {
+            return;
+        }
+
         MoverModel firstRunMover = currentMover;
         MoverModel secondRunMover = opponentMover;
         
@@ -94,88 +95,6 @@ public class MancalaBoardStrategyImpl implements GameBoard {
             secondRunMover = currentMover;
             startOnSelfHouses = false;
         }
-        
-        /*int startPositionPoints = firstRunScores.get(this.startPosition);
-        firstRunScores.put(this.startPosition, SCORE_ZERO);
-        firstRunMover.getSquare(this.startPosition).setPoints(SCORE_ZERO);
-        firstRunMover.getSquare(this.startPosition).removeNextStart();
-        
-        //adjusting the first run square sets
-        for(int x = (startIndex + 1); x < 8; x++) {
-            //if starting in opponent house and goes to their reserve position(7) don't add points 
-            if(!startOnSelfHouses && x == POSITION_RESERVE) {
-                continue;
-            }
-            
-            String inx = startPrefix + "" + x;
-            int points = firstRunMover.getSquare(inx).getPoints() + SCORE_ONE;
-            firstRunScores.put(inx, points);
-            firstRunMover.getSquare(inx).setPoints(points);
-            firstRunMover.getSquare(inx).removeNextStart();
-            
-            startPositionPoints = startPositionPoints - SCORE_ONE;
-            if(startPositionPoints == SCORE_ZERO) {
-                
-                this.startPosition = inx;
-                //give current user another chance to start
-                if(startOnSelfHouses && x == POSITION_RESERVE) {
-                    this.startPosition = null;
-                }
-                
-                //mark as starting position for the next play button hit
-                if(this.startPosition != null && points > SCORE_ONE) {
-                    firstRunMover.getSquare(inx).markAsNextStart();
-                //on the final landing square when no score other than newly added one then current user's turn ends
-                } else if(this.startPosition != null && points == SCORE_ONE) {
-                    this.currentPlayerTurn = false;
-                    this.startPosition = null;
-                    
-                    currentMover.markAsOpponentTurn();
-                    opponentMover.markAsMyTurn();
-                }
-                break;
-            }
-        }*/
-        
-        //adjustment for 2nd run square sets
-        /*if(startPositionPoints > SCORE_ZERO) {
-            startPrefix = secondRunMover.getHouse().toUpperCase().charAt(0);
-            for(int x = 1; x < 8; x++) {
-                //when start on own house and running on opposition houses for the 2nd round don't allow adding points to their reserve position(7)
-                if(startOnSelfHouses && x == POSITION_RESERVE) {
-                    continue;
-                }
-                
-                String inx = startPrefix + "" + x;
-                int points = secondRunMover.getSquare(inx).getPoints() + SCORE_ONE;
-                secondRunScores.put(inx, points);
-                secondRunMover.getSquare(inx).setPoints(points);
-                secondRunMover.getSquare(inx).removeNextStart();
-                
-                startPositionPoints = startPositionPoints - SCORE_ONE;
-                if(startPositionPoints == SCORE_ZERO) {
-                    
-                    this.startPosition = inx;
-                    //current user landed on his own reserve, give another chance to start
-                    if(!startOnSelfHouses && x == POSITION_RESERVE) {
-                        this.startPosition = null;
-                    }
-                    
-                    //mark as starting position for the next play button hit
-                    if(this.startPosition != null && points > SCORE_ONE) {
-                        secondRunMover.getSquare(inx).markAsNextStart();
-                    //on the final landing square when no score other than newly added one then current user's turn ends
-                    } else if(this.startPosition != null && points == SCORE_ONE) {
-                        this.currentPlayerTurn = false;
-                        this.startPosition = null;
-                        
-                        currentMover.markAsOpponentTurn();
-                        opponentMover.markAsMyTurn();                        
-                    }
-                    break;
-                }
-            }
-        }*/
  
         int points = firstRunScores.get(this.startPosition);
         while(points > 0) {
@@ -430,5 +349,4 @@ public class MancalaBoardStrategyImpl implements GameBoard {
         this.gameResults.put(GameConstant.WINNER, this.determineWinner());
         return this.gameResults;
     }
-    
 }

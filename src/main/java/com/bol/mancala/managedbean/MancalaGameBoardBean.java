@@ -56,61 +56,131 @@ public class MancalaGameBoardBean {
         this.currentPlayer.setGameBoard(mancalaBoard);
         this.result = mancalaBoard.fetchResults();
     }
-    
+ 
+    /**
+     * Returns Whether Current User's Turn To Play
+     * 
+     * @return Boolean
+     */    
     public boolean getIsUserTurn() {
         return (boolean)this.result.get(GameConstant.USER_TURN);
     }
-    
+ 
+    /**
+     * Returns Current Player's Score in all Squares (1-6)
+     * 
+     * @return List<Integer>
+     */    
     @SuppressWarnings("unchecked")
     public List<Integer> getPlayerScores() {
         return (List<Integer>) this.result.get(GameConstant.MINE_SCORES);
     }
-    
+ 
+    /**
+     * Returns Opponent Player's Score in all Squares (6-1)
+     * 
+     * @return List<Integer>
+     */    
     @SuppressWarnings("unchecked")
     public List<Integer> getOpponentScores() {
         return (List<Integer>) this.result.get(GameConstant.OPPONENT_SCORES);
     }
 
+    /**
+     * Returns Current Player's Reserve Square Points
+     * 
+     * @return int
+     */    
     public int getPlayerReserveScore() {
         return (int) this.result.get(GameConstant.MINE_RESERVE);
     }
-    
+
+    /**
+     * Returns Opponent Player's Reserve Square Points
+     * 
+     * @return int
+     */    
     public int getOpponentReserveScore() {
         return (int) this.result.get(GameConstant.OPPONENT_RESERVE);
     }
 
+    /**
+     * Returns Current Player's House(Red/Blue)
+     * 
+     * @return String
+     */     
     public String getPlayerHouse() {
         return (String) this.result.get(GameConstant.MINE_HOUSE);
     }
-    
+ 
+    /**
+     * Returns Current Player's House Prefix(R/B) for Square Identifier
+     * 
+     * @return String
+     */    
     public String getPlayerHousePrefix() {
         return this.getPlayerHouse().toUpperCase().charAt(0) + "";
     }    
-    
+
+    /**
+     * Returns Opponent Player's House(Red/Blue)
+     * 
+     * @return String
+     */    
     public String getOpponentHouse() {
         return (String) this.result.get(GameConstant.OPPONENT_HOUSE);
     }  
-    
+
+    /**
+     * Returns Opponent Player's House Prefix(R/B) for Square Identifier
+     * 
+     * @return String
+     */     
     public String getOpponentHousePrefix() {
         return this.getOpponentHouse().toUpperCase().charAt(0) + "";
     }  
-    
+
+    /**
+     * Returns Starting Square Position
+     * 
+     * @return String
+     */    
     public String getStartSquare() {
         return (String) this.result.get(GameConstant.START_SQUARE);
     }
-    
+ 
+    /**
+     * Returns Current Player's Nickname
+     * 
+     * @return String
+     */     
     public String getPlayerNickname() {
         return (String) this.result.get(GameConstant.MINE_NICKNAME);
     } 
-    
+
+    /**
+     * Returns Opponent Player's Nickname
+     * 
+     * @return String
+     */    
     public String getOpponentNickname() {
         return (String) this.result.get(GameConstant.OPPONENT_NICKNAME);
     }  
-    
+ 
+    /**
+     * Returns Winner's Nickname
+     * 
+     * @return String
+     */    
     public String getWinner() {
         return (String) this.result.get(GameConstant.WINNER);
     }    
-    
+
+    /**
+     * Play Action Made on the Board
+     * 
+     * @throws ServiceException
+     */    
     public void playGame() throws ServiceException {
         if(this.currentPlayer == null || this.playSession == null) {
             return;
@@ -130,11 +200,22 @@ public class MancalaGameBoardBean {
             this.gamingService.savePlayer(playerModel);
         }    
     }
-    
+
+    /**
+     * Decline Action Made on the Board
+     * 
+     * @throws ServiceException
+     */    
     public void decline() throws ServiceException {
         this.gamingService.deleteGameSession(this.playSession);
     }
-    
+
+    /**
+     * Replay a new Game with the same opponent action
+     * 
+     * @throws ServiceException
+     * @throws IOException
+     */    
     public void replayAgain() throws ServiceException, IOException {
         this.gamingService.deleteGameSession(this.playSession);
         

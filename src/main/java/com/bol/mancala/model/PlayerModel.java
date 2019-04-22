@@ -14,15 +14,27 @@ public final class PlayerModel extends Model {
     private String lastPlayed;
     
     private Element element;
-    
+ 
+    /**
+     * Constructor
+     */    
     public PlayerModel() {
         
     }
-    
+
+    /**
+     * Constructor
+     * @param element
+     */    
     public PlayerModel(Element element) {
         this.toModel(element);
     }
-    
+
+    /**
+     * Convert an element to a Model object
+     * 
+     * @param element
+     */    
     @Override
     public void toModel(Element element) {
         this.nickname = (element.hasAttribute("nickname")) ? element.getAttribute("nickname") : this.nickname;
@@ -30,6 +42,11 @@ public final class PlayerModel extends Model {
         this.element = element;
     }
 
+    /**
+     * Returns XMLNode representation of Model
+     * 
+     * @return Element
+     */   
     @Override
     public Element toXmlNode() {
         if(this.element == null) {
@@ -42,18 +59,38 @@ public final class PlayerModel extends Model {
         return this.element;
     }
 
+    /**
+     * Returns Nickname
+     * 
+     * @return String
+     */    
     public String getNickname() {
         return nickname;
     }
 
+    /**
+     * Sets Nickname
+     * 
+     * @param nickname
+     */    
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
+    /**
+     * Returns Last Played Time
+     * 
+     * @return String
+     */    
     public String getLastPlayed() {
         return lastPlayed;
     }
 
+    /**
+     * Set Last Played Time
+     * 
+     * @param lastPlayed
+     */    
     public void setLastPlayed(String lastPlayed) {
         this.lastPlayed = lastPlayed;
     }

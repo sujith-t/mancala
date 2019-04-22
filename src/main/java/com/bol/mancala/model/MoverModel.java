@@ -24,18 +24,28 @@ public final class MoverModel extends Model {
     
     private final Map<String, SquareModel> squares;
 
+    /**
+     * Constructor
+     */    
     public MoverModel() {
         this.squares = new HashMap<>();
     }
+    
     /**
-     *
+     * Constructor
+     * 
      * @param element
      */
     public MoverModel(Element element) {
         this.squares = new HashMap<>();
         this.toModel(element);
     }
-    
+ 
+    /**
+     * Convert an element to a Model object
+     * 
+     * @param element
+     */    
     @Override
     public void toModel(Element element) {
         this.nickname = (element.hasAttribute("nickname")) ? element.getAttribute("nickname") : this.nickname;
@@ -56,6 +66,11 @@ public final class MoverModel extends Model {
         this.element = element;        
     }
 
+    /**
+     * Returns XMLNode representation of Model
+     * 
+     * @return Element
+     */    
     @Override
     public Element toXmlNode() {
         if(this.element == null) {
@@ -80,55 +95,110 @@ public final class MoverModel extends Model {
         return this.element;
     }
 
+    /**
+     * Returns Nickname
+     * 
+     * @return String
+     */    
     public String getNickname() {
         return nickname;
     }
 
+    /**
+     * Returns Nickname
+     * 
+     * @param nickname
+     */    
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
+    /**
+     * Returns House
+     * 
+     * @return String
+     */     
     public String getHouse() {
         return house;
     }
 
+    /**
+     * Sets House
+     * 
+     * @param house
+     */    
     public void setHouse(String house) {
         this.house = house;
     }
 
+    /**
+     * Gets Engagement State
+     * 
+     * @return String
+     */    
     public String getEngaged() {
         return engaged;
     }
-    
+
+    /**
+     * Marks Engagement State to Engaged
+     */    
     public void markEngaged() {
         this.engaged = "true";
     }
-    
+
+    /**
+     * Marks Decision Pending
+     */    
     public void markPending() {
         this.engaged = "pending";
     }
     
+    /**
+     * Returns Square
+     * @param id
+     * @return SquareModel
+     */    
     public SquareModel getSquare(String id) {
         return this.squares.get(id);
     }
 
+    /**
+     * Adds a Square
+     * @param square
+     */     
     public void addSquare(SquareModel square) {
         this.squares.put(square.getId(), square);
     }    
 
+    /**
+     * Returns All Squares
+     * @return List<SquareModel>
+     */    
     public List<SquareModel> getSquares() {
         List<SquareModel> list = new ArrayList<>(this.squares.values());
         return list;        
     }
 
+    /**
+     * Returns Whether it's Mover's Turn
+     * 
+     * @return Boolean
+     */    
     public boolean isMyTurn() {
         return myTurn;
     }
 
+    /**
+     * Mark as Current Mover's Turn
+     */
     public void markAsMyTurn() {
         this.myTurn = true;
     }
     
+    /**
+     * Mark as Opponent's Turn
+     */    
     public void markAsOpponentTurn() {
         this.myTurn = false;
     }

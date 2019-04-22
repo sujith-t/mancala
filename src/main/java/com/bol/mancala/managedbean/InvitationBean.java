@@ -83,15 +83,31 @@ public class InvitationBean {
         
         return list;
     }
-    
+
+    /**
+     * Returns Nickname
+     * 
+     * @return String
+     */    
     public String getNickname() {
         return nickname;
     }
 
+    /**
+     * Sets Nickname
+     * 
+     * @param nickname
+     */    
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
     
+    /**
+     * Invite another user to play
+     * 
+     * @throws ServiceException
+     * @throws IOException
+     */    
     public void sendInvitation() throws ServiceException, IOException {
         String[] houses = {"red", "blue"};
         Random rand = new Random();

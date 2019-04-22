@@ -21,16 +21,29 @@ public final class SessionModel extends Model {
     private final Map<String, MoverModel> movers;
     
     private Element element;
-    
+ 
+    /**
+     * Constructor
+     */    
     public SessionModel() {
         this.movers = new HashMap<>();
     }
-    
+ 
+    /**
+     * Constructor
+     * 
+     * @param element
+     */    
     public SessionModel(Element element) {
         this.movers = new HashMap<>();
         this.toModel(element);
     }    
 
+    /**
+     * Convert an element to a Model object
+     * 
+     * @param element
+     */    
     @Override
     public void toModel(Element element) {
         this.id = (element.hasAttribute("id")) ? element.getAttribute("id") : this.id;
@@ -49,6 +62,11 @@ public final class SessionModel extends Model {
         this.element = element;        
     }
 
+    /**
+     * Returns XMLNode representation of Model
+     * 
+     * @return Element
+     */    
     @Override
     public Element toXmlNode() {
         if(this.element == null) {
@@ -66,30 +84,66 @@ public final class SessionModel extends Model {
         return this.element;
     }
 
+    /**
+     * Returns Id
+     * 
+     * @return String
+     */    
     public String getId() {
         return id;
     }
 
+    /**
+     * Set Id
+     * 
+     * @param id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Get Last Played Time
+     * 
+     * @return String
+     */    
     public String getLastPlayed() {
         return lastPlayed;
     }
 
+    /**
+     * Set Last Played Time
+     * 
+     * @param lastPlayed
+     */    
     public void setLastPlayed(String lastPlayed) {
         this.lastPlayed = lastPlayed;
     }
 
+    /**
+     * Return Mover By Nickname
+     * 
+     * @param nickname
+     * @return MoverModel
+     */     
     public MoverModel getMover(String nickname) {
         return movers.get(nickname);
     }
 
+    /**
+     * Add a Mover
+     * 
+     * @param mover
+     */     
     public void addMover(MoverModel mover) {
         this.movers.put(mover.getNickname(), mover);
     }
-    
+
+    /**
+     * Returns List of Movers
+     * 
+     * @return List<MoverModel>
+     */     
     public List<MoverModel> getMovers() {
         List<MoverModel> list = new ArrayList<>(this.movers.values());
         return list;
