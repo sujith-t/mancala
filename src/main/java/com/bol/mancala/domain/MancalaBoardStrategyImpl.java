@@ -309,6 +309,7 @@ public class MancalaBoardStrategyImpl implements GameBoard {
     @Override
     public Map<GameConstant, Object> fetchResults() {
         this.gameResults.put(GameConstant.USER_TURN, this.currentPlayerTurn);
+        this.gameResults.put(GameConstant.START_SQUARE, this.startPosition);
         
         //populate current user's result
         String housePrefix = (String)this.gameResults.get(GameConstant.MINE_HOUSE);

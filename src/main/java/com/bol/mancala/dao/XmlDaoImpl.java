@@ -36,19 +36,37 @@ import org.xml.sax.SAXException;
 public class XmlDaoImpl implements XmlDao {
 
     private static Document dom;
-    private static final String GAMING_FILE = "/tmp/mancala-gaming.xml";
+    private String gamingFile = "/tmp/mancala-gaming.xml";
 
+    /**
+     * @param file
+     * @throws XmlDaoException
+     * @throws IOException
+     */    
+    public XmlDaoImpl(String file) throws XmlDaoException, IOException {
+        this.gamingFile = file;
+        this.init();
+    }
+ 
     /**
      * @throws XmlDaoException
      * @throws IOException
      */
     public XmlDaoImpl() throws XmlDaoException, IOException {
+        this.init();
+    }    
+    
+    /**
+     * @throws XmlDaoException
+     * @throws IOException
+     */
+    private void init() throws XmlDaoException, IOException {
         
         //first check whether config file is present if not we create
-        File file = new File(GAMING_FILE);
+        File file = new File(this.gamingFile);
 
         if (!file.exists() || !file.isFile()) {
-            try (PrintWriter writer = new PrintWriter(GAMING_FILE, "UTF-8")) {
+            try (PrintWriter writer = new PrintWriter(this.gamingFile, "UTF-8")) {
                 writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 writer.println("<game><players></players><sessions></sessions></game>");
                 writer.close();
@@ -85,7 +103,7 @@ public class XmlDaoImpl implements XmlDao {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
             DOMSource source = new DOMSource(dom);
-            StreamResult result = new StreamResult(new File(GAMING_FILE));
+            StreamResult result = new StreamResult(new File(this.gamingFile));
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(source, result);
         } catch (TransformerException ex) {

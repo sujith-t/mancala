@@ -31,16 +31,17 @@ import static org.junit.Assert.*;
 public class GamingServiceImplTest {
     
     private GamingService service;
+    private String gameFile = "/tmp/mancala-gaming-test.xml";
     
     @Before
     public void setUp() throws XmlDaoException, IOException { 
-        this.service = new GamingServiceImpl(new XmlDaoImpl());
+        this.service = new GamingServiceImpl(new XmlDaoImpl(this.gameFile));
     }
     
     @After
     public void tearDown() {
         this.service = null;
-        File file = new File("/tmp/mancala-gaming.xml");
+        File file = new File(this.gameFile);
         file.delete();        
     }
 

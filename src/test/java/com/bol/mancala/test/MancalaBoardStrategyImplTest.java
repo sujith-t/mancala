@@ -10,13 +10,12 @@ import com.bol.mancala.model.SessionModel;
 import com.bol.mancala.model.SquareModel;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -166,19 +165,19 @@ public class MancalaBoardStrategyImplTest {
     @Test
     public void testNoScoreChangeWhenPendingForOpponent() {
         String squareId = "B1";
-        MoverModel opponent = this.gameSession.getMover(this.opponent.getUsername());
-        int myScoreBeforePlay = opponent.getSquare(squareId).getPoints();
-        opponent.markPending();
+        MoverModel tmpopponent = this.gameSession.getMover(this.opponent.getUsername());
+        int myScoreBeforePlay = tmpopponent.getSquare(squareId).getPoints();
+        tmpopponent.markPending();
         this.player.play();
-        int myScoreAfterPlay = opponent.getSquare(squareId).getPoints();
+        int myScoreAfterPlay = tmpopponent.getSquare(squareId).getPoints();
         assertEquals(myScoreBeforePlay, myScoreAfterPlay);
         
         Map<GameConstant, Object> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
-        opponent.markEngaged();
+        tmpopponent.markEngaged();
         this.player.play();
-        myScoreAfterPlay = opponent.getSquare(squareId).getPoints();
+        myScoreAfterPlay = tmpopponent.getSquare(squareId).getPoints();
         assertNotEquals(myScoreBeforePlay, myScoreAfterPlay);    
     } 
     
@@ -188,16 +187,53 @@ public class MancalaBoardStrategyImplTest {
     @Test
     public void testScoresAdditions() {
         String squareId = "R1";
-        MoverModel initiator = this.gameSession.getMover(this.player.getUsername());
-        for(SquareModel square:initiator.getSquares()) {
-            
-        }
-        this.player.play();
+        Map<GameConstant, Object> result = this.mancalaBoard.fetchResults();
+        @SuppressWarnings("unchecked")
+        List<Integer> scores = (List<Integer>)result.get(GameConstant.MINE_SCORES);
+        int reserve = (Integer)result.get(GameConstant.MINE_RESERVE);
         
-        assertEquals(0, initiator.getSquare(squareId).getPoints());
-        for(int x = 2; x < 7; x++) {
+        Map<GameConstant, Object> params = new HashMap<>();
+        params.put(GameConstant.START_SQUARE, squareId);
+        this.mancalaBoard.initParameter(params);
+        
+        result = this.player.play();
+        @SuppressWarnings("unchecked")
+        List<Integer> latestScores = (List<Integer>)result.get(GameConstant.MINE_SCORES);
+        int latestReserve = (Integer)result.get(GameConstant.MINE_RESERVE);
+        
+        for(int x = 0; x < 6; x++) {
+            int score = scores.get(x);
             
-            assertEquals(0, initiator.getSquare("R" + x).getPoints());
+            //R1 = 0
+            if(x == 0) {
+                assertNotEquals(0, score);
+                assertEquals(0, latestScores.get(x).intValue());
+            } else {
+                assertEquals((score + 1), latestScores.get(x).intValue());
+            }
         }
-    }    
+        
+        assertEquals(0, reserve);
+        assertEquals(1, latestReserve);
+    } 
+    
+    /**
+     * when the last piece lands into the reserve square, next start
+     * would be user's choice which is null
+     */    
+    @Test
+    public void testStartSquareMadeNull() {
+        String squareId = "R1";
+        Map<GameConstant, Object> result = this.mancalaBoard.fetchResults();
+        assertEquals(null, result.get(GameConstant.START_SQUARE));
+        
+        Map<GameConstant, Object> params = new HashMap<>();
+        params.put(GameConstant.START_SQUARE, squareId);
+        this.mancalaBoard.initParameter(params);
+        result = this.mancalaBoard.fetchResults();
+        assertEquals(squareId, (String)result.get(GameConstant.START_SQUARE));
+        
+        result = this.player.play();
+        assertEquals(null, result.get(GameConstant.START_SQUARE));
+    }   
 }

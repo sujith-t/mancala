@@ -25,16 +25,17 @@ import org.w3c.dom.Element;
 public class XmlDaoImplTest {
     
     private XmlDao dao;
+    private String gameFile = "/tmp/mancala-gaming-test.xml";
     
     @Before
     public void init() throws XmlDaoException, IOException {       
-        this.dao = new XmlDaoImpl();
+        this.dao = new XmlDaoImpl(this.gameFile);
     }
     
     @After
     public void tearDown() {
         this.dao = null;
-        File file = new File("/tmp/mancala-gaming.xml");
+        File file = new File(this.gameFile);
         file.delete();        
     }
  
@@ -44,7 +45,7 @@ public class XmlDaoImplTest {
     @Test
     public void testInstance() {
         assertTrue(this.dao instanceof XmlDao);
-        File file = new File("/tmp/mancala-gaming.xml");
+        File file = new File(this.gameFile);
         assertTrue(file.exists());
     } 
   
