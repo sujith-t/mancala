@@ -1,0 +1,247 @@
+.error {
+    color:red;
+}
+
+.txtbox {
+    border: 1px; 
+    border-style:solid;
+    border-color: #dcd9d8;
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    padding: 5px;
+    color:#555;
+}
+
+.lbl {
+    margin: 5px;
+}
+
+.redbtn {
+    border-color: #f91313;
+    color: #ffffff;
+    font-weight:bold;
+    background-color: #f91313;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-width: 100px;
+    min-height: 30px;
+    border-radius: 3px;
+}
+
+.joinbox {
+    border: 1px; 
+    border-style:solid;
+    border-color:#ADAEAE;
+    margin:auto;
+    padding: 20px;
+    background-color:#ECEDEE;
+    width: 400px;
+    height: 200px;
+    font-family:Arial, Helvetica, sans-serif;
+    border-radius: 3px;
+}
+
+.selectheading {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 20px;
+    color: #555;
+    margin:20px;
+}
+
+#nickname {
+    margin: 20px;
+}
+
+#nickname td {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 18px;
+    color: #04931c;    
+    border: 1px solid #a6f4a6;
+    padding: 10px;
+}
+
+#nickname td:hover {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 18px;
+    color: #fff;
+    font-weight: bold;
+    border: 1px solid #3c423c;
+    padding: 10px;
+    background-color: #124c12;
+    cursor: pointer;
+}
+
+#nickname input[type="radio"] {
+    border: 1px; 
+    border-style:solid;
+    border-color: #dcd9d8;    
+}
+
+.yellowbtn {
+    border-color: #e2df02;
+    color: #000;
+    font-weight:bold;
+    font-size: 16px;
+    background-color: #e2df02;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-width: 100px;
+    min-height: 40px;
+    border-radius: 3px;
+}
+
+#infoinvite {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right:auto;
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    border: 1px; 
+    border-style:solid;
+    border-color:#ADAEAE;
+    border-radius: 5px;
+    width:500px;
+}
+
+#infoinvite .selectheading {
+    background-color: #3fc40d;
+    height: 30px;
+    color: #000;
+}
+
+#infoinvite tr, #infoinvite td {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+
+#infoinvite p {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#infoinvite .body {
+    background-color: #f2f9ef;
+}
+
+.mancalagameboard {
+    margin: auto;
+    border: 0px;
+    padding: 0px;
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.red {
+    background-color: #e02f49;
+}
+
+.red .spot {
+    background-color: #aa0a21;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 5px;
+    width: 100px;
+    height: 100px;
+    color: #fff;
+    text-align: center;
+    border-radius: 30px;
+    border: 3px solid #870d21;
+    margin: 5px;
+}
+
+.red .leftreserve {
+    background-color: #aa0a21;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 5px;
+    width: 100px;
+    height: 150px;
+    color: #fff;
+    text-align: center;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 20px;
+    border: 1px solid #000;
+}
+
+.red .rightreserve {
+    background-color: #aa0a21;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 5px;
+    width: 100px;
+    height: 150px;
+    color: #fff;
+    text-align: center;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 20px;
+    border: 1px solid #000;
+}
+
+.blue {
+    background-color: #3a84c1;
+}
+
+.blue .spot {
+    background-color: #04467c;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 5px;
+    width: 100px;
+    height: 100px; 
+    color: #fff;
+    text-align: center;
+    border-radius: 30px;
+    border: 3px solid #07273d;
+}
+
+.blue .rightreserve {
+    background-color: #04467c;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 5px;
+    width: 100px;
+    height: 150px;
+    color: #fff;
+    text-align: center;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 40px;
+    border: 1px solid #000;
+}
+
+.blue .leftreserve {
+    background-color: #04467c;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 5px;
+    width: 100px;
+    height: 150px;
+    color: #fff;
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 40px;
+    border: 1px solid #000;
+}
+
+.gameinfo {
+    border: 1px solid #dee1e2;
+    min-height: 200px;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 20px;
+    color: #202021;
+}
+
+.ticker {
+    background-color: #74cc28;
+    border: 1px dotted #355e11;
+    color: #000;
+    padding:2px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.houseinfo {
+    height: 30px;
+    padding:2px;
+    color:#fff;
+}

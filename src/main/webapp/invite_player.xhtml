@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Play Mancala</title>
+        <meta http-equiv="refresh" content="5" />
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+        <script type="text/javascript">
+            var purl = "${url}";
+        </script>
+        <script src="assets/js/common.js"></script>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </h:head> 
+    <h:body>
+        <br /><br/>
+        <!--write a custom message if players are not available may be do an ajax update-->
+        <div class="selectheading">Select the player you wish to start with</div>
+        <h:form id="inviteForm" prependId="false" class="frm">
+            <h:selectOneRadio id="nickname" required="true" value="#{invitationBean.nickname}">
+                    <c:forEach items="${invitationBean.availablePlayers}" var="player">
+                        <f:selectItem itemValue="${player.nickname}" itemLabel="${player.nickname}" class="selectbox" />                 
+                    </c:forEach>
+            </h:selectOneRadio>
+            <br/><br/>
+            <h:commandButton id="submit" value="Send Invitation" class="yellowbtn" action="#{invitationBean.sendInvitation}" />
+        </h:form>
+    </h:body>
+</html>

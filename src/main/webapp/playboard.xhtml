@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Play Mancala</title>
+        <c:set var="statusMsg" value="Mancala Quest!!" />
+        <meta http-equiv="refresh" content="10" />
+        <c:if test="${boardBean.isUserTurn eq false}">
+            <c:set var="statusMsg" value="Please wait till player ${boardBean.opponentNickname} finishes his turn" />
+        </c:if>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+        <script type="text/javascript">
+            var purl = "${url}";
+            var selectedBox = "${boardBean.startSquare}";
+            var isMyTurn =  ${boardBean.isUserTurn};
+            var startSquare = "${boardBean.startSquare}";
+            var winner = "${boardBean.winner}";
+        </script>
+        <script src="assets/js/common.js"></script>
+        <script src="assets/js/play.js"></script>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+        <c:choose>
+            <c:when test="${empty boardBean.startSquare and boardBean.isUserTurn eq true}">
+                <c:set var="statusMsg" value="Click on any of your houses to start and hit 'Play My Turn' button" />
+            </c:when>
+            <c:when test="${not empty boardBean.startSquare and boardBean.isUserTurn eq true}">
+                <c:set var="statusMsg" value="You have landed on ${boardBean.startSquare} square, hit 'Play My Turn' button" />
+            </c:when>
+            <c:when test="${boardBean.winner eq boardBean.playerNickname}">
+                <c:set var="statusMsg" value="Congratulation ${boardBean.playerNickname}!! you won" />
+            </c:when>  
+            <c:when test="${boardBean.winner eq boardBean.opponentNickname}">
+                <c:set var="statusMsg" value="Your opponent ${boardBean.opponentNickname} won" />
+            </c:when>  
+            <c:when test="${boardBean.winner eq 'NONE'}">
+                <c:set var="statusMsg" value="You and your opponent ${boardBean.opponentNickname} both scored equally, the game ends" />
+            </c:when>            
+            <c:otherwise>
+                
+            </c:otherwise>
+        </c:choose>
+    </h:head>
+    <h:body>
+        <h:form id="boardForm" prependId="false" class="frm">
+        <table class="mancalagameboard">
+            <tr id="opponent_area">
+                <td rowspan="2" class="#{boardBean.opponentHouse}" valign="top">
+                    <table border="0">
+                        <tr>
+                            <td class="leftreserve" colspan="2">#{boardBean.opponentReserveScore}</td>
+                        </tr>
+                    </table>
+                </td>
+                <ui:repeat var="score" value="#{boardBean.opponentScores}" varStatus="meta">
+                    <td class="#{boardBean.opponentHouse}">
+                        <table border="0">
+                            <tr>
+                                <td class="spot" colspan="3">#{score}</td>
+                            </tr>
+                            <tr>
+                                <td>#{boardBean.opponentHousePrefix.concat(6 - meta.index)}</td>
+                                <td><input type="radio" value="#{boardBean.opponentHousePrefix.concat(6 - meta.index)}" name="squareId" /></td>
+                                <td class="indicator"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </ui:repeat>
+                <td><h:outputText value="&#160;" /></td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <h:outputText value="&#160;" />
+                </td>
+                <td rowspan="2" class="#{boardBean.playerHouse}" valign="bottom">
+                    <table border="0">
+                        <tr>
+                            <td class="rightreserve" colspan="2">#{boardBean.playerReserveScore}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr id="player_area">
+                <td><h:outputText value="&#160;" /></td>
+                <ui:repeat var="score" value="#{boardBean.playerScores}" varStatus="meta">
+                    <td class="#{boardBean.playerHouse}">
+                        <table border="0">
+                            <tr>
+                                <td class="spot" colspan="3">#{score}</td>
+                            </tr>
+                            <tr>
+                                <td>#{boardBean.playerHousePrefix.concat(meta.index + 1)}</td>
+                                <td><input type="radio" value="#{boardBean.playerHousePrefix.concat(meta.index + 1)}" name="squareId" /></td>
+                                <td class="indicator"></td>
+                            </tr>
+                        </table>
+                    </td>                    
+                </ui:repeat>
+            </tr>
+            <tr><td colspan="8" class="gameinfo">${statusMsg}</td></tr>
+            <tr>
+                <td><h:outputText value="&#160;" /></td>
+                <td class="#{boardBean.playerHouse} houseinfo">Your House</td>
+                <td colspan="6"> : #{boardBean.playerNickname}</td>
+            </tr>
+            <tr>
+                <td><h:outputText value="&#160;" /></td>
+                <td class="#{boardBean.opponentHouse} houseinfo">Opponent House</td>
+                <td colspan="6"> : #{boardBean.opponentNickname}</td>
+            </tr>            
+            <tr><td colspan="8"></td></tr>
+            <tr>
+                <td colspan="8">   
+                    <h:commandButton id="btnplay" value="Play My Turn" class="yellowbtn" action="#{boardBean.playGame}" />
+                    <h:outputText value="&#160;" />
+                    <h:commandButton id="btndecline" value="Decline From Game" class="yellowbtn" action="#{boardBean.decline}" />
+                    <h:outputText value="&#160;" />
+                    <h:commandButton id="btnrematch" value="Re-Match" class="yellowbtn" action="#{boardBean.replayAgain}" />
+                </td>
+            </tr>
+        </table>
+        </h:form>      
+    </h:body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Play Mancala</title>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+        <script type="text/javascript">
+            var purl = "${url}";
+        </script>
+        <script src="assets/js/common.js"></script>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </h:head> 
+    <h:body>
+        <table id="infoinvite" cellpadding="0" cellspacing="0">
+            <tr><th class="selectheading">Invitation Info!!</th></tr>
+            <tr>
+                <td class="body">
+                    <p>Hi #{matchBean.receipient}!!</p> 
+                    <p>#{matchBean.initiator} has invited @ #{matchBean.inviteTime} to match with you, do you accept? or decline?</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="body" align="center">
+                    <h:form id="matchForm" prependId="false" class="frm">
+                        <h:commandButton id="accept" value="I Accept" class="yellowbtn" action="#{matchBean.accept}" />
+                        &nbsp;&nbsp;
+                        <h:commandButton id="decline" value="Decline Invitation" class="yellowbtn" action="#{matchBean.decline}" />
+                    </h:form>                    
+                </td>
+            </tr>
+            <tr><td class="body">&nbsp;</td></tr>
+        </table>
+    </h:body>
+</html>
