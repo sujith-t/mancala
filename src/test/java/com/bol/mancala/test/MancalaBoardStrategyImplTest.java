@@ -235,5 +235,87 @@ public class MancalaBoardStrategyImplTest {
         
         result = this.player.play();
         assertEquals(null, result.get(GameConstant.START_SQUARE));
-    }   
+    }
+    
+    /**
+     * find the next starting square when having more points
+     * start from R3
+     */    
+    @Test
+    public void testWhenASquareHasMorePoints() {
+        String squareToStart = "R3";
+        int score = 15;
+  
+        MoverModel currentMover = this.gameSession.getMover(this.player.getUsername());
+        SquareModel square = currentMover.getSquare(squareToStart);
+        square.setPoints(score);
+        square.markAsNextStart();
+        currentMover.addSquare(square);
+        this.gameSession.addMover(currentMover);  
+        
+        this.mancalaBoard = new MancalaBoardStrategyImpl(this.player, this.gameSession);
+        Map<GameConstant, Object> resultBeforePlay = this.mancalaBoard.fetchResults();
+        assertEquals(squareToStart, (String)resultBeforePlay.get(GameConstant.START_SQUARE));
+        
+        @SuppressWarnings("unchecked")
+        List<Integer> scores = (List<Integer>)resultBeforePlay.get(GameConstant.MINE_SCORES);
+        for(int x = 0; x < scores.size(); x++) {
+            //R3 position
+            if(x == 2) {
+                assertEquals(score, scores.get(x).intValue());
+            } else {
+                assertEquals(6, scores.get(x).intValue());
+            }
+        }
+        
+        this.player.setGameBoard(this.mancalaBoard);
+        Map<GameConstant, Object> resultAfterPlay = this.player.play();
+        assertEquals("R5", (String)resultAfterPlay.get(GameConstant.START_SQUARE));
+        
+        @SuppressWarnings("unchecked")
+        List<Integer> latestScores = (List<Integer>)resultAfterPlay.get(GameConstant.MINE_SCORES);
+        for(int x = 0; x < latestScores.size(); x++) {
+            //R3 position
+            if(x == 2) {
+                assertEquals(1, latestScores.get(x).intValue());
+            } else if (x == 0 || x == 2 ) {
+                assertEquals(1, latestScores.get(x).intValue());
+            } else if (x == 3 || x == 4 ) {
+                assertEquals(8, latestScores.get(x).intValue());
+            } else {
+                assertEquals(7, latestScores.get(x).intValue());
+            }
+        }        
+    }  
+    
+    /**
+     * current player looses his chance and opponent gets it
+     * start from R3
+     */    
+    @Test
+    public void testPlayerLoosesTurnAndOpponentGets() {
+        String squareToStart = "R3";
+        int score = 13;
+  
+        MoverModel currentMover = this.gameSession.getMover(this.player.getUsername());
+        SquareModel square = currentMover.getSquare(squareToStart);
+        square.setPoints(score);
+        square.markAsNextStart();
+        currentMover.addSquare(square);
+        this.gameSession.addMover(currentMover);  
+        
+        this.mancalaBoard = new MancalaBoardStrategyImpl(this.player, this.gameSession);
+        Map<GameConstant, Object> resultBeforePlay = this.mancalaBoard.fetchResults();
+        assertEquals(squareToStart, (String)resultBeforePlay.get(GameConstant.START_SQUARE));
+        assertTrue((boolean)resultBeforePlay.get(GameConstant.USER_TURN));
+        
+        this.player.setGameBoard(this.mancalaBoard);
+        Map<GameConstant, Object> resultAfterPlay = this.player.play();
+        assertEquals(null, (String)resultAfterPlay.get(GameConstant.START_SQUARE));
+        assertFalse((boolean)resultAfterPlay.get(GameConstant.USER_TURN));
+        
+        @SuppressWarnings("unchecked")
+        List<Integer> latestScores = (List<Integer>)resultAfterPlay.get(GameConstant.MINE_SCORES);
+        assertEquals(1, latestScores.get(2).intValue());
+    }    
 }
