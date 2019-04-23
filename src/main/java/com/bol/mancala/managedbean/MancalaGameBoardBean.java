@@ -165,7 +165,22 @@ public class MancalaGameBoardBean {
      */    
     public String getOpponentNickname() {
         return (String) this.result.get(GameConstant.OPPONENT_NICKNAME);
-    }  
+    }
+ 
+    /**
+     * Returns Whether Opponent Player's Accepted Invitation
+     * 
+     * @return Boolean
+     */    
+    public boolean getOpponentAcceptedInvitation() {
+        String opponent = (String) this.result.get(GameConstant.OPPONENT_NICKNAME);
+        MoverModel opponentMover = this.playSession.getMover(opponent);
+        
+        if(opponentMover.getEngaged().equals("pending")) {
+            return false;
+        }
+        return true;
+    }
  
     /**
      * Returns Winner's Nickname

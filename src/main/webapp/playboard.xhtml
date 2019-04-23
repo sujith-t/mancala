@@ -24,7 +24,7 @@
         <script src="assets/js/play.js"></script>
         <link rel="stylesheet" href="assets/css/styles.css" />
         <c:choose>
-            <c:when test="${empty boardBean.startSquare and boardBean.isUserTurn eq true}">
+            <c:when test="${(empty boardBean.startSquare) and (boardBean.isUserTurn eq true) and (boardBean.opponentAcceptedInvitation eq true)}">
                 <c:set var="statusMsg" value="Click on any of your houses to start and hit 'Play My Turn' button" />
             </c:when>
             <c:when test="${not empty boardBean.startSquare and boardBean.isUserTurn eq true}">
@@ -38,7 +38,11 @@
             </c:when>  
             <c:when test="${boardBean.winner eq 'NONE'}">
                 <c:set var="statusMsg" value="You and your opponent ${boardBean.opponentNickname} both scored equally, the game ends" />
-            </c:when>            
+            </c:when>
+            <c:when test="${boardBean.opponentAcceptedInvitation eq false}">
+                <c:set var="statusMsg" value="Please wait till ${boardBean.opponentNickname} accept game invitation" />
+            </c:when>
+            
             <c:otherwise>
                 
             </c:otherwise>
