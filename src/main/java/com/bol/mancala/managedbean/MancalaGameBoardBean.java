@@ -4,6 +4,7 @@ package com.bol.mancala.managedbean;
 import com.bol.mancala.domain.GameBoard;
 import com.bol.mancala.domain.GameConstant;
 import com.bol.mancala.domain.MancalaBoardStrategyImpl;
+import com.bol.mancala.domain.MancalaResult;
 import com.bol.mancala.domain.Player;
 import com.bol.mancala.exception.ServiceException;
 import com.bol.mancala.model.MoverModel;
@@ -40,7 +41,7 @@ public class MancalaGameBoardBean {
     private final Player currentPlayer;
     private SessionModel playSession;
     private final HttpServletRequest httpRequest;
-    private Map<GameConstant, Object> result;
+    private MancalaResult result;
     
     @Inject
     public MancalaGameBoardBean(GamingService service) throws ServiceException {
@@ -54,7 +55,7 @@ public class MancalaGameBoardBean {
         
         GameBoard mancalaBoard = new MancalaBoardStrategyImpl(this.currentPlayer, this.playSession);
         this.currentPlayer.setGameBoard(mancalaBoard);
-        this.result = mancalaBoard.fetchResults();
+        this.result = (MancalaResult)mancalaBoard.fetchResults();
     }
  
     /**
@@ -63,7 +64,7 @@ public class MancalaGameBoardBean {
      * @return Boolean
      */    
     public boolean getIsUserTurn() {
-        return (boolean)this.result.get(GameConstant.USER_TURN);
+        return this.result.isCurrentPlayerTurn();
     }
  
     /**
@@ -71,9 +72,8 @@ public class MancalaGameBoardBean {
      * 
      * @return List<Integer>
      */    
-    @SuppressWarnings("unchecked")
     public List<Integer> getPlayerScores() {
-        return (List<Integer>) this.result.get(GameConstant.MINE_SCORES);
+        return this.result.getMyScores();
     }
  
     /**
@@ -81,9 +81,8 @@ public class MancalaGameBoardBean {
      * 
      * @return List<Integer>
      */    
-    @SuppressWarnings("unchecked")
     public List<Integer> getOpponentScores() {
-        return (List<Integer>) this.result.get(GameConstant.OPPONENT_SCORES);
+        return this.result.getOpponentScores();
     }
 
     /**
@@ -92,7 +91,7 @@ public class MancalaGameBoardBean {
      * @return int
      */    
     public int getPlayerReserveScore() {
-        return (int) this.result.get(GameConstant.MINE_RESERVE);
+        return this.result.getMyReserveScore();
     }
 
     /**
@@ -101,7 +100,7 @@ public class MancalaGameBoardBean {
      * @return int
      */    
     public int getOpponentReserveScore() {
-        return (int) this.result.get(GameConstant.OPPONENT_RESERVE);
+        return this.result.getOpponentReserveScore();
     }
 
     /**
@@ -110,7 +109,7 @@ public class MancalaGameBoardBean {
      * @return String
      */     
     public String getPlayerHouse() {
-        return (String) this.result.get(GameConstant.MINE_HOUSE);
+        return this.result.getMyHouse();
     }
  
     /**
@@ -128,7 +127,7 @@ public class MancalaGameBoardBean {
      * @return String
      */    
     public String getOpponentHouse() {
-        return (String) this.result.get(GameConstant.OPPONENT_HOUSE);
+        return this.result.getOpponentHouse();
     }  
 
     /**
@@ -146,7 +145,7 @@ public class MancalaGameBoardBean {
      * @return String
      */    
     public String getStartSquare() {
-        return (String) this.result.get(GameConstant.START_SQUARE);
+        return this.result.getStartPosition();
     }
  
     /**
@@ -155,7 +154,7 @@ public class MancalaGameBoardBean {
      * @return String
      */     
     public String getPlayerNickname() {
-        return (String) this.result.get(GameConstant.MINE_NICKNAME);
+        return this.result.getMyNickname();
     } 
 
     /**
@@ -164,7 +163,7 @@ public class MancalaGameBoardBean {
      * @return String
      */    
     public String getOpponentNickname() {
-        return (String) this.result.get(GameConstant.OPPONENT_NICKNAME);
+        return this.result.getOpponentNickname();
     }
  
     /**
@@ -173,13 +172,10 @@ public class MancalaGameBoardBean {
      * @return Boolean
      */    
     public boolean getOpponentAcceptedInvitation() {
-        String opponent = (String) this.result.get(GameConstant.OPPONENT_NICKNAME);
+        String opponent = this.result.getOpponentNickname();
         MoverModel opponentMover = this.playSession.getMover(opponent);
         
-        if(opponentMover.getEngaged().equals("pending")) {
-            return false;
-        }
-        return true;
+        return !opponentMover.getEngaged().equals("pending");
     }
  
     /**
@@ -188,7 +184,7 @@ public class MancalaGameBoardBean {
      * @return String
      */    
     public String getWinner() {
-        return (String) this.result.get(GameConstant.WINNER);
+        return this.result.getWinner();
     }    
 
     /**
@@ -203,12 +199,12 @@ public class MancalaGameBoardBean {
         
         String selectedSquareId = this.httpRequest.getParameter("squareId");
         if(selectedSquareId != null) {
-            Map<GameConstant, Object> map = new HashMap<>();
+            Map<GameConstant, String> map = new HashMap<>();
             map.put(GameConstant.START_SQUARE, selectedSquareId);
             PlayerModel playerModel = this.gamingService.loadPlayer(this.currentPlayer.getUsername());
             
             this.currentPlayer.getGameBoard().initParameter(map);
-            this.result = this.currentPlayer.play();
+            this.result = (MancalaResult)this.currentPlayer.play();
             playerModel.setLastPlayed((new Date()).toString());
             
             this.gamingService.saveGameSession(this.playSession);

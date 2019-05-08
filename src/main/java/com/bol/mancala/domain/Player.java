@@ -1,7 +1,6 @@
 
 package com.bol.mancala.domain;
 
-import java.util.Map;
 import java.util.Objects;
 import javax.ejb.Stateful;
 
@@ -35,7 +34,7 @@ public class Player {
         return this.gameBoardStrategy;
     }    
 
-    public Map<GameConstant, Object> play() {
+    public PlayResult play() {
         this.gameBoardStrategy.move();
         return this.gameBoardStrategy.fetchResults();
     }

@@ -30,7 +30,8 @@ public class MancalaBoardStrategyImpl implements GameBoard {
     private final static String HOUSE_RED = "red";
     private final static String HOUSE_BLUE = "blue";
     
-    private final Map<GameConstant, Object> gameResults;
+    //private final Map<GameConstant, Object> gameResults;
+    private final MancalaResult result;
     
     public MancalaBoardStrategyImpl(Player player, SessionModel session) {
         this.gameSession = session;
@@ -42,10 +43,10 @@ public class MancalaBoardStrategyImpl implements GameBoard {
         
         this.currentPlayerScores = new HashMap<>();
         this.opponentScores = new HashMap<>();
-        this.gameResults = new HashMap<>();
+        this.result = new MancalaResult();
         
         for(MoverModel mover : movers) {
-            String housePrefix = (mover.getHouse().equals(HOUSE_RED)) ? "R" : "B";
+            String housePrefix = mover.getHouse().toUpperCase().charAt(0) + "";
             
             for(int x = 1; x < 8; x++) {
                 SquareModel square = mover.getSquare(housePrefix + x);
@@ -53,25 +54,25 @@ public class MancalaBoardStrategyImpl implements GameBoard {
                 
                 if(mover.equals(currentMover)) {
                     this.currentPlayerScores.put(housePrefix + x, square.getPoints());
-                    this.gameResults.put(GameConstant.MINE_HOUSE, mover.getHouse());
-                    this.gameResults.put(GameConstant.MINE_NICKNAME, mover.getNickname());
+                    this.result.setMyHouse(mover.getHouse());
+                    this.result.setMyNickname(mover.getNickname());
                 } else {
                     this.opponentScores.put(housePrefix + x, square.getPoints());
-                    this.gameResults.put(GameConstant.OPPONENT_HOUSE, mover.getHouse());
-                    this.gameResults.put(GameConstant.OPPONENT_NICKNAME, mover.getNickname());
+                    this.result.setOpponentHouse(mover.getHouse());
+                    this.result.setOpponentNickname(mover.getNickname());
                 }
             }
         }
         
         if(this.startPosition != null) {
-            this.gameResults.put(GameConstant.START_SQUARE, this.startPosition);
+            this.result.setStartPosition(this.startPosition);
         }
         
     }
     
     @Override
     public void move() {
-        String opponentPlayerNickname = (String)this.gameResults.get(GameConstant.OPPONENT_NICKNAME);
+        String opponentPlayerNickname = this.result.getOpponentNickname();
         MoverModel currentMover = this.gameSession.getMover(this.currentPlayer.getUsername());
         MoverModel opponentMover = this.gameSession.getMover(opponentPlayerNickname);
         
@@ -125,9 +126,9 @@ public class MancalaBoardStrategyImpl implements GameBoard {
             this.currentPlayerTurn = false;
         }
    
-        this.gameResults.put(GameConstant.START_SQUARE, this.startPosition);
+        this.result.setStartPosition(this.startPosition);
         this.gameSession.setLastPlayed((new Date()).toString());
-        this.gameResults.put(GameConstant.WINNER, winner);
+        this.result.setWinner(winner);
         
         //final update on the scoremaps
         if(startOnSelfHouses) {
@@ -153,7 +154,7 @@ public class MancalaBoardStrategyImpl implements GameBoard {
             this.startPosition = startPrefix + 1;
         }
         
-        String opponentPlayerNickname = (String)this.gameResults.get(GameConstant.OPPONENT_NICKNAME);
+        String opponentPlayerNickname = this.result.getOpponentNickname();
         MoverModel currentMover = this.gameSession.getMover(this.currentPlayer.getUsername());
         MoverModel opponentMover = this.gameSession.getMover(opponentPlayerNickname);        
         
@@ -207,7 +208,7 @@ public class MancalaBoardStrategyImpl implements GameBoard {
         //adjustment for 2nd run square sets
         if(startPositionPoints > SCORE_ZERO) {
 
-            String opponentPlayerNickname = (String)this.gameResults.get(GameConstant.OPPONENT_NICKNAME);
+            String opponentPlayerNickname = this.result.getOpponentNickname();
             MoverModel currentMover = this.gameSession.getMover(this.currentPlayer.getUsername());
             MoverModel opponentMover = this.gameSession.getMover(opponentPlayerNickname);  
         
@@ -255,14 +256,14 @@ public class MancalaBoardStrategyImpl implements GameBoard {
     
     private String determineWinner() {
 
-        String opponentNickname = (String)this.gameResults.get(GameConstant.OPPONENT_NICKNAME);   
+        String opponentNickname = this.result.getOpponentNickname();
         boolean currentPlayerWinner = true;
         boolean opponentWinner = true;
         int currentPlayerReserve = 0;
         int opponentReserve = 0;
         
         for(int i = 1; i < 7; i++) {
-            String housePrefix = ((String)this.gameResults.get(GameConstant.MINE_HOUSE)).toUpperCase().charAt(0) + "";
+            String housePrefix = this.result.getMyHouse().toUpperCase().charAt(0) + "";
             int points = this.currentPlayerScores.get(housePrefix + i);
             currentPlayerReserve = this.currentPlayerScores.get(housePrefix + 7);
             
@@ -270,7 +271,7 @@ public class MancalaBoardStrategyImpl implements GameBoard {
                 currentPlayerWinner = false;
             }
             
-            housePrefix = ((String)this.gameResults.get(GameConstant.OPPONENT_HOUSE)).toUpperCase().charAt(0) + "";
+            housePrefix = this.result.getOpponentHouse().toUpperCase().charAt(0) + "";
             points = this.opponentScores.get(housePrefix + i);
             opponentReserve = this.opponentScores.get(housePrefix + 7);
                     
@@ -301,53 +302,37 @@ public class MancalaBoardStrategyImpl implements GameBoard {
     }
     
     @Override
-    public void initParameter(Map<GameConstant, Object> map) {
+    public void initParameter(Map<GameConstant, String> map) {
         this.startPosition = (map.containsKey(GameConstant.START_SQUARE)) ? 
-                (String)map.get(GameConstant.START_SQUARE) : this.startPosition;
+                map.get(GameConstant.START_SQUARE) : this.startPosition;
     }
 
     @Override
-    public Map<GameConstant, Object> fetchResults() {
-        this.gameResults.put(GameConstant.USER_TURN, this.currentPlayerTurn);
-        this.gameResults.put(GameConstant.START_SQUARE, this.startPosition);
+    public PlayResult fetchResults() {
+        this.result.setCurrentPlayerTurn(this.currentPlayerTurn);
+        this.result.setStartPosition(this.startPosition);
         
         //populate current user's result
-        String housePrefix = (String)this.gameResults.get(GameConstant.MINE_HOUSE);
-        if(housePrefix.equals(HOUSE_BLUE)) {
-            housePrefix = "B";
-        } else {
-            housePrefix = "R";
+        String housePrefix = this.result.getMyHouse().toUpperCase().charAt(0) + "";   
+        List<Integer> scores = new ArrayList<>();
+        for(int x = 1; x < 7; x++) {
+            scores.add(this.currentPlayerScores.get(housePrefix + x));
         }
         
-        List<Integer> scores = new ArrayList<>();
-        
-        scores.add(this.currentPlayerScores.get(housePrefix + 1));
-        scores.add(this.currentPlayerScores.get(housePrefix + 2));
-        scores.add(this.currentPlayerScores.get(housePrefix + 3));
-        scores.add(this.currentPlayerScores.get(housePrefix + 4));
-        scores.add(this.currentPlayerScores.get(housePrefix + 5));
-        scores.add(this.currentPlayerScores.get(housePrefix + 6));
-        this.gameResults.put(GameConstant.MINE_SCORES, scores);
-        this.gameResults.put(GameConstant.MINE_RESERVE, this.currentPlayerScores.get(housePrefix + 7));
+        this.result.setMyScores(scores);
+        this.result.setMyReserveScore(this.currentPlayerScores.get(housePrefix + 7));
  
         //load opponent's scores
-        housePrefix = (String)this.gameResults.get(GameConstant.OPPONENT_HOUSE);
-        if(housePrefix.equals(HOUSE_BLUE)) {
-            housePrefix = "B";
-        } else {
-            housePrefix = "R";
+        housePrefix = this.result.getOpponentHouse().toUpperCase().charAt(0) + "";
+        scores = new ArrayList<>();
+        for(int x = 6; x > 0; x--) {
+            scores.add(this.opponentScores.get(housePrefix + x));
         }
         
-        scores = new ArrayList<>();
-        scores.add(this.opponentScores.get(housePrefix + 6));
-        scores.add(this.opponentScores.get(housePrefix + 5));
-        scores.add(this.opponentScores.get(housePrefix + 4));
-        scores.add(this.opponentScores.get(housePrefix + 3));
-        scores.add(this.opponentScores.get(housePrefix + 2));
-        scores.add(this.opponentScores.get(housePrefix + 1));
-        this.gameResults.put(GameConstant.OPPONENT_SCORES, scores);
-        this.gameResults.put(GameConstant.OPPONENT_RESERVE, this.opponentScores.get(housePrefix + 7));
-        this.gameResults.put(GameConstant.WINNER, this.determineWinner());
-        return this.gameResults;
+        this.result.setOpponentScores(scores);
+        this.result.setOpponentReserveScore(this.opponentScores.get(housePrefix + 7));
+        this.result.setWinner(this.determineWinner());
+        
+        return this.result;
     }
 }

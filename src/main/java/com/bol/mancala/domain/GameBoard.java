@@ -9,9 +9,9 @@ import java.util.Map;
  */
 public interface GameBoard {
     
-    public void initParameter(Map<GameConstant, Object> map);
+    public void initParameter(Map<GameConstant, String> map);
     
     public void move();
     
-    public Map<GameConstant, Object> fetchResults();
+    public PlayResult fetchResults();
 }

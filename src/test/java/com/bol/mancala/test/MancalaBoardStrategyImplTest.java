@@ -4,6 +4,7 @@ package com.bol.mancala.test;
 import com.bol.mancala.domain.GameBoard;
 import com.bol.mancala.domain.GameConstant;
 import com.bol.mancala.domain.MancalaBoardStrategyImpl;
+import com.bol.mancala.domain.MancalaResult;
 import com.bol.mancala.domain.Player;
 import com.bol.mancala.model.MoverModel;
 import com.bol.mancala.model.SessionModel;
@@ -107,7 +108,7 @@ public class MancalaBoardStrategyImplTest {
         int myScoreAfterPlay = initiator.getSquare(squareId).getPoints();
         assertEquals(myScoreBeforePlay, myScoreAfterPlay);
         
-        Map<GameConstant, Object> params = new HashMap<>();
+        Map<GameConstant, String> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
         this.player.play();
@@ -128,7 +129,7 @@ public class MancalaBoardStrategyImplTest {
         int myScoreAfterPlay = initiator.getSquare(squareId).getPoints();
         assertEquals(myScoreBeforePlay, myScoreAfterPlay);
         
-        Map<GameConstant, Object> params = new HashMap<>();
+        Map<GameConstant, String> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
         initiator.markAsMyTurn();
@@ -150,7 +151,7 @@ public class MancalaBoardStrategyImplTest {
         int myScoreAfterPlay = initiator.getSquare(squareId).getPoints();
         assertEquals(myScoreBeforePlay, myScoreAfterPlay);
         
-        Map<GameConstant, Object> params = new HashMap<>();
+        Map<GameConstant, String> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
         initiator.markEngaged();
@@ -172,7 +173,7 @@ public class MancalaBoardStrategyImplTest {
         int myScoreAfterPlay = tmpopponent.getSquare(squareId).getPoints();
         assertEquals(myScoreBeforePlay, myScoreAfterPlay);
         
-        Map<GameConstant, Object> params = new HashMap<>();
+        Map<GameConstant, String> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
         tmpopponent.markEngaged();
@@ -187,19 +188,18 @@ public class MancalaBoardStrategyImplTest {
     @Test
     public void testScoresAdditions() {
         String squareId = "R1";
-        Map<GameConstant, Object> result = this.mancalaBoard.fetchResults();
-        @SuppressWarnings("unchecked")
-        List<Integer> scores = (List<Integer>)result.get(GameConstant.MINE_SCORES);
-        int reserve = (Integer)result.get(GameConstant.MINE_RESERVE);
+        MancalaResult result = (MancalaResult)this.mancalaBoard.fetchResults();
+
+        List<Integer> scores = result.getMyScores();
+        int reserve = result.getMyReserveScore();
         
-        Map<GameConstant, Object> params = new HashMap<>();
+        Map<GameConstant, String> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
         
-        result = this.player.play();
-        @SuppressWarnings("unchecked")
-        List<Integer> latestScores = (List<Integer>)result.get(GameConstant.MINE_SCORES);
-        int latestReserve = (Integer)result.get(GameConstant.MINE_RESERVE);
+        result = (MancalaResult)this.player.play();
+        List<Integer> latestScores = result.getMyScores();
+        int latestReserve = result.getMyReserveScore();
         
         for(int x = 0; x < 6; x++) {
             int score = scores.get(x);
@@ -224,17 +224,17 @@ public class MancalaBoardStrategyImplTest {
     @Test
     public void testStartSquareMadeNull() {
         String squareId = "R1";
-        Map<GameConstant, Object> result = this.mancalaBoard.fetchResults();
-        assertEquals(null, result.get(GameConstant.START_SQUARE));
+        MancalaResult result = (MancalaResult)this.mancalaBoard.fetchResults();
+        assertEquals(null, result.getStartPosition());
         
-        Map<GameConstant, Object> params = new HashMap<>();
+        Map<GameConstant, String> params = new HashMap<>();
         params.put(GameConstant.START_SQUARE, squareId);
         this.mancalaBoard.initParameter(params);
-        result = this.mancalaBoard.fetchResults();
-        assertEquals(squareId, (String)result.get(GameConstant.START_SQUARE));
+        result = (MancalaResult)this.mancalaBoard.fetchResults();
+        assertEquals(squareId, result.getStartPosition());
         
-        result = this.player.play();
-        assertEquals(null, result.get(GameConstant.START_SQUARE));
+        result = (MancalaResult)this.player.play();
+        assertEquals(null, result.getStartPosition());
     }
     
     /**
@@ -254,11 +254,10 @@ public class MancalaBoardStrategyImplTest {
         this.gameSession.addMover(currentMover);  
         
         this.mancalaBoard = new MancalaBoardStrategyImpl(this.player, this.gameSession);
-        Map<GameConstant, Object> resultBeforePlay = this.mancalaBoard.fetchResults();
-        assertEquals(squareToStart, (String)resultBeforePlay.get(GameConstant.START_SQUARE));
+        MancalaResult resultBeforePlay = (MancalaResult)this.mancalaBoard.fetchResults();
+        assertEquals(squareToStart, resultBeforePlay.getStartPosition());
         
-        @SuppressWarnings("unchecked")
-        List<Integer> scores = (List<Integer>)resultBeforePlay.get(GameConstant.MINE_SCORES);
+        List<Integer> scores = resultBeforePlay.getMyScores();
         for(int x = 0; x < scores.size(); x++) {
             //R3 position
             if(x == 2) {
@@ -269,11 +268,10 @@ public class MancalaBoardStrategyImplTest {
         }
         
         this.player.setGameBoard(this.mancalaBoard);
-        Map<GameConstant, Object> resultAfterPlay = this.player.play();
-        assertEquals("R5", (String)resultAfterPlay.get(GameConstant.START_SQUARE));
+        MancalaResult resultAfterPlay = (MancalaResult)this.player.play();
+        assertEquals("R5", resultAfterPlay.getStartPosition());
         
-        @SuppressWarnings("unchecked")
-        List<Integer> latestScores = (List<Integer>)resultAfterPlay.get(GameConstant.MINE_SCORES);
+        List<Integer> latestScores = resultAfterPlay.getMyScores();
         for(int x = 0; x < latestScores.size(); x++) {
             //R3 position
             if(x == 2) {
@@ -305,17 +303,16 @@ public class MancalaBoardStrategyImplTest {
         this.gameSession.addMover(currentMover);  
         
         this.mancalaBoard = new MancalaBoardStrategyImpl(this.player, this.gameSession);
-        Map<GameConstant, Object> resultBeforePlay = this.mancalaBoard.fetchResults();
-        assertEquals(squareToStart, (String)resultBeforePlay.get(GameConstant.START_SQUARE));
-        assertTrue((boolean)resultBeforePlay.get(GameConstant.USER_TURN));
+        MancalaResult resultBeforePlay = (MancalaResult)this.mancalaBoard.fetchResults();
+        assertEquals(squareToStart, resultBeforePlay.getStartPosition());
+        assertTrue(resultBeforePlay.isCurrentPlayerTurn());
         
         this.player.setGameBoard(this.mancalaBoard);
-        Map<GameConstant, Object> resultAfterPlay = this.player.play();
-        assertEquals(null, (String)resultAfterPlay.get(GameConstant.START_SQUARE));
-        assertFalse((boolean)resultAfterPlay.get(GameConstant.USER_TURN));
+        MancalaResult resultAfterPlay = (MancalaResult)this.player.play();
+        assertEquals(null, resultAfterPlay.getStartPosition());
+        assertFalse(resultAfterPlay.isCurrentPlayerTurn());
         
-        @SuppressWarnings("unchecked")
-        List<Integer> latestScores = (List<Integer>)resultAfterPlay.get(GameConstant.MINE_SCORES);
+        List<Integer> latestScores = resultAfterPlay.getMyScores();
         assertEquals(1, latestScores.get(2).intValue());
     }    
 }
